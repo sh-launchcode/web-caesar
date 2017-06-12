@@ -4,6 +4,8 @@ from caesar import rotate_string
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
+string = ""
+
 form = """
 <!DOCTYPE html>
 
@@ -25,30 +27,36 @@ form = """
             }
         </style>
     </head>
+    """
+textedit = """
     <body>
-        <form action="/encrypt" method="post">
+        <form method="post">
             <label for="rot">
             <b>Rotate by: <b> 
             <input type="text" id="rot" name="rot" value="0"/>
             </label>
             <br><br>
-            <label for="text">
-            <input type="textarea" id="text" name="text"/>
+            <textarea type="text" name="text">{0}</textarea>
             <br>
-            <input type="submit" value="Submit Query"/>
+            <input type="submit" value="Submit"/>
+        </form>
     </body>
 </html>
 """
-@app.route("/encrypt", methods=['POST'])
+
+@app.route("/", methods=['POST'])
 def encrypt():
     text = request.form['text']
     rot = int(request.form['rot'])
     encryption = rotate_string(text, rot)
-    
-    return "<h1>" + encryption + "</h1>"
+    return form + textedit.format(encryption)
 
 
 @app.route("/")
 def index():
-    return form
+    return form + textedit.format(string)
+
+
+
+
 app.run()
